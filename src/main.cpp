@@ -16,13 +16,9 @@ public:
     struct Node* firstItem = nullptr;
     struct Node* lastItem = nullptr;
 
-    LinkedList(){
-        cout << "Init LinkedList ...\n";
-    }
+    LinkedList(){}
 
-    ~LinkedList(){
-        cout << "Destroying LinkedList ...\n";
-    }
+    ~LinkedList(){}
 
     /* Add an element to the end of the linked list. Returns the added element's pointer */
     Node* add(int data) {
@@ -239,13 +235,8 @@ public:
 
 
 int main(){
-
-    cout << "helloworld \n";
-
     LinkedList list;
 
-    /* Node* nodePointer =*/ 
-    
     list.add(21);
     list.add(212);
     list.add(11);
@@ -254,10 +245,6 @@ int main(){
 
     list.print('\n');
     
-    cout << "212 occurrances: " << list.count(212) << " ---\n";
-
-    // list.print('\n');
-
-    // cout << "Pointer of added node: " << nodePointer << "\nValue of pointer: " << nodePointer->data << "\n";
+    cout << "212 occurrances: " << list.count(212) << "\n";
 }
 

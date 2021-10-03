@@ -1,4 +1,5 @@
 #include <iostream>
+#include <functional>
 
 using namespace std;
 
@@ -169,13 +170,13 @@ public:
     }
 
     /* Find the first occurrence of a value in the list. Returns -1 if not found. */ 
-    int firstIndexOf(int searchValue){
+    int firstIndexOf(function<bool(int)> lambda){
         int i = 0;
         Node* f = firstItem;
         for(;;){
             if( f == nullptr ) return -1;
             // return index if search value matches (else -1)
-            if( f->data == searchValue ) return i;
+            if( lambda(f->data) ) return i;
             
             f = f->next;
             i++;
@@ -183,13 +184,13 @@ public:
     }
 
     /* Find the last occurrence of a value in the list. Returns -1 if not found. */ 
-    int lastIndexOf(int searchValue){
+    int lastIndexOf(function<bool(int)> lambda){
         int i = 0;
         Node* f = lastItem;
         for(;;){
             if( f == nullptr ) return -1;
             // return index if search value matches (else -1)
-            if( f->data == searchValue ) return size() - i - 1;
+            if( lambda(f->data) ) return size() - i - 1;
             
             f = f->previous;
             i++;
@@ -197,14 +198,14 @@ public:
     }
 
     /* Get the Nth occurance's index of an element. Returns -1 if not found. */ 
-    int nthIndexOf(int N, int searchValue){
+    int nthIndexOf(int N, function<bool(int)> lambda){
         int i = 0;
         int _n = 0;
         Node* f = firstItem;
         for(;;){
             if( f == nullptr ) return -1;
             
-            if( f->data == searchValue ) {
+            if( lambda(f->data) ) {
                 if( N == _n ) return i;
                 _n++;
             }
@@ -231,6 +232,60 @@ public:
         return c;
     }
 
+    /* Create a new LinkedList instance with values matching the lambda function */
+    LinkedList filter( function<bool(int)> lambda ){
+        LinkedList result;
+
+        Node* f = firstItem;
+        for(;;){
+            if( f == nullptr ) break;
+            
+            if( lambda(f->data) ) result.add(f->data);
+            
+            f = f->next;
+        }
+
+        return result;
+    }
+
+    /* Return the first value mathcing lambda */
+    int first( function<bool(int)> lambda ){
+        Node* f = firstItem;
+        for(;;){
+            if( f == nullptr ) break;
+            
+            if( lambda(f->data) ) return f->data;
+            
+            f = f->next;
+        }
+        return 0;
+    }
+
+    /* Return the last value mathcing lambda */
+    int last( function<bool(int)> lambda ){
+        Node* f = lastItem;
+        for(;;){
+            if( f == nullptr ) break;
+            
+            if( lambda(f->data) ) return f->data;
+            
+            f = f->previous;
+        }
+        return 0;
+    }
+
+    /*  */
+    void aggregate( function<void(int)> lambda){
+        Node* f = firstItem;
+        for(;;){
+            if( f == nullptr ) break;
+            
+            lambda(f->data);
+            
+            f = f->next;
+        }
+    }
+  
 };
 
 
@@ -243,8 +298,23 @@ int main(){
     list.add(212);
     list.add(214);
 
+    // get values bigger than 21
+    LinkedList biggerThan21 = list.filter([](int x){ return x > 21; });
+    biggerThan21.print('\n');
+
+    // print the first value bigger than 21
+    cout << "First value bigger than 21: " << list.first( [](int x){ return x > 21; } ) << "\n";
+
+    // print the first index of value bigger than 21
+    cout << "Index of first value bigger than 21: " << list.firstIndexOf( [](int x){ return x > 21; } ) << "\n";
+
     list.print('\n');
-    
-    cout << "212 occurrances: " << list.count(212) << "\n";
+
+    int sum = 0;
+    list.aggregate([&sum](int x){ sum += x; } );
+
+    cout << "Sum of list: " << sum << "\n";
+
+
 }
 
